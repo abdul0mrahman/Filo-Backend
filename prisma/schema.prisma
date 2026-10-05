@@ -1,24 +1,59 @@
-generator client {
-  provider = "prisma-client-js"
-}
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"
+  url = env("DATABASE_URL") }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-enum Role {
-  CREATOR
-  BRAND
-  ADMIN
-}
+enum Role { CREATOR BRAND ADMIN }
+enum Platform { INSTAGRAM YOUTUBE TIKTOK TWITTER FACEBOOK LINKEDIN OTHER }
 
 model User {
-  id           String   @id @default(uuid())
+  id           Int             @id @default(autoincrement())
   name         String
-  email        String   @unique
+  email        String          @unique
   passwordHash String
-  role         Role
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  role         Role            @default(CREATOR)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  creator      CreatorProfile?
+  brand        BrandProfile?
+}
+
+model CreatorProfile {
+  id          Int             @id @default(autoincrement())
+  userId      Int             @unique
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName String
+  bio         String?
+  niche       String?
+  location    String?
+  avatarUrl   String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  socials     SocialAccount[]
+}
+
+model BrandProfile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName String
+  industry    String?
+  website     String?
+  description String?
+  location    String?
+  logoUrl     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SocialAccount {
+  id         Int            @id @default(autoincrement())
+  creatorId  Int
+  creator    CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  platform   Platform
+  handle     String
+  profileUrl String?
+  followers  Int            @default(0)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  @@unique([creatorId, platform, handle])
 }

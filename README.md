@@ -1,120 +1,49 @@
 # Filo Backend
 
-Day 1 backend foundation for Filo: a minimal, working Node.js/Express API with
-PostgreSQL (via Prisma) and JWT-based authentication. This is intentionally
-scoped to authentication only — no campaigns, matching, payments, or other
-marketplace features yet.
+Node.js + Express + PostgreSQL (Prisma). JWT auth, Creator & Brand profiles, Social Accounts.
 
-## Requirements
-
-- Node.js 18+
-- PostgreSQL 13+
-- npm
-
-## Installation
-
-```bash
-cd filo-backend
-npm install
-```
-
-## Environment Setup
-
-Copy the example environment file and fill in real values:
-
-```bash
-cp .env.example .env
-```
-
-`.env` variables:
-
-| Variable       | Description                                  |
-| -------------- | --------------------------------------------- |
-| `DATABASE_URL` | PostgreSQL connection string                  |
-| `JWT_SECRET`   | Secret used to sign/verify JWTs               |
-| `PORT`         | Port the API server listens on (default 5000) |
-
-Example `DATABASE_URL`:
-
-```
-postgresql://USER:PASSWORD@localhost:5432/filo_dev?schema=public
-```
-
-## Database Setup
-
-Make sure PostgreSQL is running and the database in `DATABASE_URL` exists,
-then run the initial migration and generate the Prisma Client:
-
-```bash
-npx prisma migrate dev
-```
-
-This creates the `User` table and generates the Prisma Client automatically.
-
-## How to Run Locally
-
+## Setup
 ```bash
 npm install
-npx prisma migrate dev
-npm run dev
+cp .env.example .env        # set DATABASE_URL and JWT_SECRET
+npx prisma migrate dev      # creates tables (migrations in prisma/migrations)
+npm run dev                 # http://localhost:5000
 ```
+Use a fresh database (or `npx prisma migrate reset`) if you had an earlier Day 1 schema.
 
-The API will start on `http://localhost:5000` (or the `PORT` you configured).
+## Testing in Postman
+Import `docs/Filo.postman_collection.json`, run the collection top to bottom (tokens/ids are saved automatically). Base URL: `http://localhost:5000`.
 
-## API Endpoints
+## Conventions
+- Auth: `Authorization: Bearer <token>`. Passwords hashed with bcrypt; JWT signed with `JWT_SECRET`.
+- Roles: `CREATOR`, `BRAND` (self-register), `ADMIN` (not self-assignable).
+- Errors: `{ "error": "message", "details": [{field, message}] }` — 400 validation, 401 unauthenticated, 403 wrong role/not owner, 404 not found, 409 conflict.
 
-| Method | Route          | Description                          | Auth required |
-| ------ | -------------- | ------------------------------------- | -------------- |
-| GET    | `/`            | Health check                          | No             |
-| POST   | `/auth/register` | Register a new user                | No             |
-| POST   | `/auth/login`     | Log in and receive a JWT            | No             |
-| GET    | `/auth/me`        | Get the authenticated user's profile | Yes (Bearer token) |
+## API Reference
+| Method | Route | Role | Description |
+|---|---|---|---|
+| GET | `/` | – | Health check |
+| POST | `/auth/register` | – | Body: name, email, password (8+ chars, letter+number), role (CREATOR/BRAND) |
+| POST | `/auth/login` | – | Body: email, password → `{user, token}` |
+| GET | `/auth/me` | any | Current user |
+| POST | `/creators/profile` | CREATOR | displayName*, bio, niche, location, avatarUrl |
+| GET | `/creators/profile` | CREATOR | Own profile + social accounts |
+| PUT | `/creators/profile` | CREATOR | Partial update |
+| GET | `/creators/:id` | any authed | View a creator profile |
+| POST | `/brands/profile` | BRAND | companyName*, industry, website, description, location, logoUrl |
+| GET | `/brands/profile` | BRAND | Own profile |
+| PUT | `/brands/profile` | BRAND | Partial update |
+| GET | `/brands/:id` | any authed | View a brand profile |
+| GET | `/social-accounts` | CREATOR | List own accounts |
+| POST | `/social-accounts` | CREATOR | platform* (INSTAGRAM, YOUTUBE, TIKTOK, TWITTER, FACEBOOK, LINKEDIN, OTHER), handle*, profileUrl, followers |
+| PUT | `/social-accounts/:id` | CREATOR (owner) | Partial update |
+| DELETE | `/social-accounts/:id` | CREATOR (owner) | Delete |
 
-## Example Authentication Requests
+`*` required. One profile per user; a creator needs a profile before adding social accounts.
 
-### Register
-
+## Git workflow
 ```bash
-curl -X POST http://localhost:5000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "Password123",
-    "role": "CREATOR"
-  }'
+git checkout -b feature/profiles-and-social-accounts
+git add . && git commit -m "Add auth, creator/brand profiles, social accounts"
+git push -u origin feature/profiles-and-social-accounts   # then open a PR
 ```
-
-### Login
-
-```bash
-curl -X POST http://localhost:5000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "password": "Password123"
-  }'
-```
-
-Response includes a `token` field. Use it for authenticated requests:
-
-### Get current user
-
-```bash
-curl http://localhost:5000/auth/me \
-  -H "Authorization: Bearer <token>"
-```
-
-## Available User Roles
-
-- `CREATOR`
-- `BRAND`
-- `ADMIN`
-
-## Security Notes
-
-- Passwords are hashed with bcrypt before being stored.
-- Password hashes are never returned in any API response.
-- JWTs are signed with `JWT_SECRET`, which must be kept out of source control.
-- `/auth/me` requires a valid `Authorization: Bearer <token>` header and
-  returns `401` for missing or invalid tokens.
