@@ -1,49 +1,64 @@
 # Filo Backend
 
-Node.js + Express + PostgreSQL (Prisma). JWT auth, Creator & Brand profiles, Social Accounts.
+Node.js + Express + PostgreSQL (Prisma). JWT auth, Creator/Brand profiles, Social Accounts, Campaigns, Invitations.
 
 ## Setup
 ```bash
 npm install
-cp .env.example .env        # set DATABASE_URL and JWT_SECRET
-npx prisma migrate dev      # creates tables (migrations in prisma/migrations)
-npm run dev                 # http://localhost:5000
+copy .env.example .env     # set DATABASE_URL and JWT_SECRET
+npx prisma migrate dev     # applies migrations
+npm run dev                # http://localhost:5000
 ```
-Use a fresh database (or `npx prisma migrate reset`) if you had an earlier Day 1 schema.
 
-## Testing in Postman
-Import `docs/Filo.postman_collection.json`, run the collection top to bottom (tokens/ids are saved automatically). Base URL: `http://localhost:5000`.
+## Testing (Postman)
+Import `docs/Filo.day4.postman_collection.json` and run the whole collection in order (it registers fresh users each run and saves tokens/ids). `docs/Filo.postman_collection.json` covers Day 2-3 auth/profile endpoints.
 
 ## Conventions
-- Auth: `Authorization: Bearer <token>`. Passwords hashed with bcrypt; JWT signed with `JWT_SECRET`.
-- Roles: `CREATOR`, `BRAND` (self-register), `ADMIN` (not self-assignable).
-- Errors: `{ "error": "message", "details": [{field, message}] }` — 400 validation, 401 unauthenticated, 403 wrong role/not owner, 404 not found, 409 conflict.
+- Auth header: `Authorization: Bearer <token>`. Roles: `CREATOR`, `BRAND`.
+- Errors: `{ "error": "...", "details": [{field, message}] }` — 400 validation, 401 unauthenticated, 403 wrong role / not your data, 404 not found, 409 conflict.
 
 ## API Reference
-| Method | Route | Role | Description |
+### Auth
+| Method | Route | Role | Notes |
 |---|---|---|---|
-| GET | `/` | – | Health check |
-| POST | `/auth/register` | – | Body: name, email, password (8+ chars, letter+number), role (CREATOR/BRAND) |
-| POST | `/auth/login` | – | Body: email, password → `{user, token}` |
-| GET | `/auth/me` | any | Current user |
-| POST | `/creators/profile` | CREATOR | displayName*, bio, niche, location, avatarUrl |
-| GET | `/creators/profile` | CREATOR | Own profile + social accounts |
-| PUT | `/creators/profile` | CREATOR | Partial update |
-| GET | `/creators/:id` | any authed | View a creator profile |
-| POST | `/brands/profile` | BRAND | companyName*, industry, website, description, location, logoUrl |
-| GET | `/brands/profile` | BRAND | Own profile |
-| PUT | `/brands/profile` | BRAND | Partial update |
-| GET | `/brands/:id` | any authed | View a brand profile |
-| GET | `/social-accounts` | CREATOR | List own accounts |
-| POST | `/social-accounts` | CREATOR | platform* (INSTAGRAM, YOUTUBE, TIKTOK, TWITTER, FACEBOOK, LINKEDIN, OTHER), handle*, profileUrl, followers |
-| PUT | `/social-accounts/:id` | CREATOR (owner) | Partial update |
-| DELETE | `/social-accounts/:id` | CREATOR (owner) | Delete |
+| POST | `/auth/register` | – | name, email, password (8+, letter+number), role (CREATOR/BRAND) |
+| POST | `/auth/login` | – | email, password → `{user, token}` |
+| GET | `/auth/me` | any | current user |
 
-`*` required. One profile per user; a creator needs a profile before adding social accounts.
+### Profiles
+| Method | Route | Role | Notes |
+|---|---|---|---|
+| POST/GET/PUT | `/creators/profile` | CREATOR | create / view own / update own |
+| GET | `/creators` | BRAND | browse creators; `?niche=&limit=&offset=` |
+| GET | `/creators/:id` | any authed | view a creator |
+| POST/GET/PUT | `/brands/profile` | BRAND | create / view own / update own |
+| GET | `/brands/:id` | any authed | view a brand |
 
-## Git workflow
-```bash
-git checkout -b feature/profiles-and-social-accounts
-git add . && git commit -m "Add auth, creator/brand profiles, social accounts"
-git push -u origin feature/profiles-and-social-accounts   # then open a PR
-```
+### Social accounts (CREATOR, own data only)
+| Method | Route | Notes |
+|---|---|---|
+| GET | `/social-accounts` | list own |
+| POST | `/social-accounts` | platform, handle, profileUrl?, followers? |
+| GET | `/social-accounts/:id` | view one |
+| PUT | `/social-accounts/:id` | partial update |
+| DELETE | `/social-accounts/:id` | delete |
+
+### Campaigns (BRAND, own data only)
+| Method | Route | Notes |
+|---|---|---|
+| POST | `/campaigns` | title*, description, budget, deadline (ISO date) |
+| GET | `/campaigns` | list own |
+| GET | `/campaigns/:id` | view own |
+| PUT | `/campaigns/:id` | partial update; `status`: ACTIVE / CLOSED |
+
+### Invitations
+| Method | Route | Role | Notes |
+|---|---|---|---|
+| POST | `/invitations` | BRAND | `{campaignId, creatorId, message?}`; own ACTIVE campaign only; one invite per creator per campaign (409) |
+| GET | `/invitations/sent` | BRAND | `?status=PENDING\|ACCEPTED\|REJECTED\|WITHDRAWN` |
+| GET | `/invitations/received` | CREATOR | same status filter |
+| GET | `/invitations/:id` | sender brand or recipient creator | others get 403 |
+| PATCH | `/invitations/:id/respond` | CREATOR (recipient) | `{status: "ACCEPTED"\|"REJECTED"}`; only while PENDING (else 409) |
+| PATCH | `/invitations/:id/withdraw` | BRAND (sender) | only while PENDING (else 409) |
+
+Flow: Brand creates profile → creates campaign → browses `GET /creators` → `POST /invitations` → Creator `GET /invitations/received` → `PATCH .../respond`.
