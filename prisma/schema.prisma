@@ -1,9 +1,39 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"
-  url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+}
 
-enum Role { CREATOR BRAND ADMIN }
-enum Platform { INSTAGRAM YOUTUBE TIKTOK TWITTER FACEBOOK LINKEDIN OTHER }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CREATOR
+  BRAND
+  ADMIN
+}
+
+enum Platform {
+  INSTAGRAM
+  YOUTUBE
+  TIKTOK
+  TWITTER
+  FACEBOOK
+  LINKEDIN
+  OTHER
+}
+
+enum CampaignStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
 
 model User {
   id           Int             @id @default(autoincrement())
@@ -29,20 +59,23 @@ model CreatorProfile {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   socials     SocialAccount[]
+  invitations Invitation[]
 }
 
 model BrandProfile {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          Int          @id @default(autoincrement())
+  userId      Int          @unique
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   companyName String
   industry    String?
   website     String?
   description String?
   location    String?
   logoUrl     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  campaigns   Campaign[]
+  invitations Invitation[]
 }
 
 model SocialAccount {
@@ -55,5 +88,37 @@ model SocialAccount {
   followers  Int            @default(0)
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
+
   @@unique([creatorId, platform, handle])
+}
+
+model Campaign {
+  id          Int            @id @default(autoincrement())
+  brandId     Int
+  brand       BrandProfile   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  budget      Int?
+  deadline    DateTime?
+  status      CampaignStatus @default(ACTIVE)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  invitations Invitation[]
+}
+
+model Invitation {
+  id          Int              @id @default(autoincrement())
+  campaignId  Int
+  campaign    Campaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  brandId     Int
+  brand       BrandProfile     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  creatorId   Int
+  creator     CreatorProfile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  message     String?
+  status      InvitationStatus @default(PENDING)
+  respondedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([campaignId, creatorId])
 }
