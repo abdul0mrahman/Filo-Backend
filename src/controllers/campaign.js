@@ -1,6 +1,7 @@
 const prisma = require('../config/prisma');
 const AppError = require('../utils/AppError');
 const parseId = require('../utils/id');
+const { notifyMany } = require('../services/notification');
 
 const brandOf = async (userId) => {
   const b = await prisma.brandProfile.findUnique({ where: { userId } });
@@ -27,5 +28,20 @@ exports.list = async (req, res) => {
 exports.getOne = async (req, res) => res.json({ campaign: await owned(req) });
 exports.update = async (req, res) => {
   const c = await owned(req);
-  res.json({ campaign: await prisma.campaign.update({ where: { id: c.id }, data: req.body }) });
+  const closing = req.body.status === 'CLOSED' && c.status === 'ACTIVE';
+  const campaign = await prisma.$transaction(async (tx) => {
+    const updated = await tx.campaign.update({ where: { id: c.id }, data: req.body });
+    if (closing) {
+      // tell creators with a still-pending invitation that the campaign closed
+      const pending = await tx.invitation.findMany({
+        where: { campaignId: c.id, status: 'PENDING' }, include: { creator: { select: { userId: true } } },
+      });
+      await notifyMany(tx, pending.map((i) => ({
+        userId: i.creator.userId, type: 'CAMPAIGN_CLOSED', invitationId: i.id, campaignId: c.id,
+        title: 'Campaign closed', message: `"${c.title}" has been closed by the brand`,
+      })));
+    }
+    return updated;
+  });
+  res.json({ campaign });
 };

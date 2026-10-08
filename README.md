@@ -1,6 +1,6 @@
 # Filo Backend
 
-Node.js + Express + PostgreSQL (Prisma). JWT auth, Creator/Brand profiles, Social Accounts, Campaigns, Invitations.
+Node.js + Express + PostgreSQL (Prisma). JWT auth, Creator/Brand profiles, Social Accounts, Campaigns, Invitations, Notifications.
 
 ## Setup
 ```bash
@@ -62,3 +62,31 @@ Import `docs/Filo.day4.postman_collection.json` and run the whole collection in 
 | PATCH | `/invitations/:id/withdraw` | BRAND (sender) | only while PENDING (else 409) |
 
 Flow: Brand creates profile → creates campaign → browses `GET /creators` → `POST /invitations` → Creator `GET /invitations/received` → `PATCH .../respond`.
+
+## Notifications API (any authenticated user, own data only)
+| Method | Route | Notes |
+|---|---|---|
+| GET | `/notifications` | `?isRead=true\|false&limit=&offset=` → `{total, unreadCount, limit, offset, notifications}`, newest first |
+| GET | `/notifications/unread-count` | `{unreadCount}` |
+| PATCH | `/notifications/:id/read` | mark one read (idempotent). 404 not found, 403 not yours, 400 bad id |
+| PATCH | `/notifications/read-all` | `{updated}` |
+
+Notification: `{id, type, title, message, invitationId, campaignId, isRead, readAt, createdAt}`
+
+## When notifications are created
+| Event | Recipient | `type` |
+|---|---|---|
+| Brand sends invitation | Creator | `INVITATION_RECEIVED` |
+| Creator accepts | Brand | `INVITATION_ACCEPTED` |
+| Creator rejects | Brand | `INVITATION_REJECTED` |
+| Brand withdraws pending invitation | Creator | `INVITATION_WITHDRAWN` |
+| Brand closes campaign | Creators with a still-PENDING invite | `CAMPAIGN_CLOSED` |
+
+Each notification is created in the same DB transaction as the action that triggers it. Accept/reject/withdraw use an atomic `PENDING`-only update, so concurrent responses return 409 instead of double-applying.
+
+## Auth & errors
+Same as Day 4: `Authorization: Bearer <token>`; 400 validation, 401 unauthenticated, 403 not your data / wrong role, 404 not found, 409 conflict.
+
+## Testing notifications
+Import `docs/Filo.day5.postman_collection.json` and run it in order. Folders 1–3 are the Day 4 flow
+(Brand → Invite Creator → Creator accepts/rejects); folder 4 verifies notifications for both sides, read/unread, and 403/404/400/401 cases.

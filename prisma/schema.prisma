@@ -35,6 +35,14 @@ enum InvitationStatus {
   WITHDRAWN
 }
 
+enum NotificationType {
+  INVITATION_RECEIVED
+  INVITATION_ACCEPTED
+  INVITATION_REJECTED
+  INVITATION_WITHDRAWN
+  CAMPAIGN_CLOSED
+}
+
 model User {
   id           Int             @id @default(autoincrement())
   name         String
@@ -45,6 +53,7 @@ model User {
   updatedAt    DateTime        @updatedAt
   creator      CreatorProfile?
   brand        BrandProfile?
+  notifications Notification[]
 }
 
 model CreatorProfile {
@@ -121,4 +130,21 @@ model Invitation {
   updatedAt   DateTime         @updatedAt
 
   @@unique([campaignId, creatorId])
+}
+
+model Notification {
+  id           Int              @id @default(autoincrement())
+  userId       Int
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         NotificationType
+  title        String
+  message      String
+  invitationId Int?
+  campaignId   Int?
+  isRead       Boolean          @default(false)
+  readAt       DateTime?
+  createdAt    DateTime         @default(now())
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
 }
