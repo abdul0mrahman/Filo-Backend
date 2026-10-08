@@ -8,7 +8,7 @@ const wrap = (c) => Object.fromEntries(Object.entries(c).map(([k, f]) => [k, h(f
 const A = wrap(require('../controllers/auth')), C = wrap(require('../controllers/creator')),
   B = wrap(require('../controllers/brand')), S = wrap(require('../controllers/social')),
   P = wrap(require('../controllers/campaign')), I = wrap(require('../controllers/invitation')),
-  D = wrap(require('../controllers/directory'));
+  D = wrap(require('../controllers/directory')), N = wrap(require('../controllers/notification'));
 
 r.post('/auth/register', validate(v.register), A.register);
 r.post('/auth/login', validate(v.login), A.login);
@@ -45,4 +45,10 @@ r.get('/invitations/received', ...creatorOnly, I.received);
 r.get('/invitations/:id', authenticate, requireRole('BRAND', 'CREATOR'), I.getOne);
 r.patch('/invitations/:id/respond', ...creatorOnly, validate(v4.invitationRespond), I.respond);
 r.patch('/invitations/:id/withdraw', ...brandOnly, I.withdraw);
+
+// Notifications: any authenticated user, own data only (static routes before :id)
+r.get('/notifications', authenticate, N.list);
+r.get('/notifications/unread-count', authenticate, N.unreadCount);
+r.patch('/notifications/read-all', authenticate, N.markAllRead);
+r.patch('/notifications/:id/read', authenticate, N.markRead);
 module.exports = r;

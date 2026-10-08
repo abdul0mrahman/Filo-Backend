@@ -1,0 +1,2330 @@
+{
+ "info": {
+  "name": "Filo Backend - Day 5",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+ },
+ "item": [
+  {
+   "name": "1 Setup",
+   "item": [
+    {
+     "name": "Creator A",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/auth/register",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "auth",
+        "register"
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"name\": \"Creator A\",\n  \"email\": \"creatorA{{$timestamp}}@example.com\",\n  \"password\": \"Password123\",\n  \"role\": \"CREATOR\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('creatorToken',pm.response.json().token);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/auth/register",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "auth",
+        "register"
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"name\": \"Creator B\",\n  \"email\": \"creatorB{{$timestamp}}@example.com\",\n  \"password\": \"Password123\",\n  \"role\": \"CREATOR\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('creator2Token',pm.response.json().token);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand A",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/auth/register",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "auth",
+        "register"
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"name\": \"Brand A\",\n  \"email\": \"brandA{{$timestamp}}@example.com\",\n  \"password\": \"Password123\",\n  \"role\": \"BRAND\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('brandToken',pm.response.json().token);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand B",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/auth/register",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "auth",
+        "register"
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"name\": \"Brand B\",\n  \"email\": \"brandB{{$timestamp}}@example.com\",\n  \"password\": \"Password123\",\n  \"role\": \"BRAND\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('brand2Token',pm.response.json().token);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A profile",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/creators/profile",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "creators",
+        "profile"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"displayName\": \"Cara\",\n  \"niche\": \"Travel\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('creatorId',pm.response.json().profile.id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B profile",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/creators/profile",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "creators",
+        "profile"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"displayName\": \"Dev\",\n  \"niche\": \"Tech\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('creator2Id',pm.response.json().profile.id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand A profile",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/brands/profile",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "brands",
+        "profile"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"companyName\": \"Acme Co\",\n  \"industry\": \"Fashion\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand B profile",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/brands/profile",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "brands",
+        "profile"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brand2Token}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"companyName\": \"Globex\",\n  \"industry\": \"Tech\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A add social",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/social-accounts",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "social-accounts"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"platform\": \"INSTAGRAM\",\n  \"handle\": \"cara.travels\",\n  \"followers\": 1000\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('socialId',pm.response.json().account.id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "View social by id",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/social-accounts/{{socialId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "social-accounts",
+        "{{socialId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Update social",
+     "request": {
+      "method": "PUT",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/social-accounts/{{socialId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "social-accounts",
+        "{{socialId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"followers\": 2500\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Other creator cannot view social (403)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/social-accounts/{{socialId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "social-accounts",
+        "{{socialId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "2 Campaigns",
+   "item": [
+    {
+     "name": "Brand A create campaign",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"title\": \"Summer Launch\",\n  \"description\": \"Promote summer line\",\n  \"budget\": 5000,\n  \"deadline\": \"2026-12-31T00:00:00.000Z\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('campaignId',pm.response.json().campaign.id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Invalid campaign (400)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"title\": \"x\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 400',()=>pm.response.to.have.status(400));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "List my campaigns",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand B cannot view (403)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns/{{campaignId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns",
+        "{{campaignId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brand2Token}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Update campaign",
+     "request": {
+      "method": "PUT",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns/{{campaignId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns",
+        "{{campaignId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"budget\": 6000\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator cannot create campaign (403)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"title\": \"Nope nope\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "3 Invitation flow",
+   "item": [
+    {
+     "name": "Brand browses creators",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/creators?niche=travel",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "creators?niche=travel"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand A invites Creator A",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"campaignId\": \"{{campaignId}}\",\n  \"creatorId\": \"{{creatorId}}\",\n  \"message\": \"Join us!\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('invitationId',pm.response.json().invitation.id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Duplicate invite (409)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"campaignId\": \"{{campaignId}}\",\n  \"creatorId\": \"{{creatorId}}\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 409',()=>pm.response.to.have.status(409));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand B cannot invite to A's campaign (404)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brand2Token}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"campaignId\": \"{{campaignId}}\",\n  \"creatorId\": \"{{creator2Id}}\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 404',()=>pm.response.to.have.status(404));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator cannot send invite (403)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"campaignId\": \"{{campaignId}}\",\n  \"creatorId\": \"{{creatorId}}\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand sent list",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/sent?status=pending",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "sent?status=pending"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A received list",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/received",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "received"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B received list (empty)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/received",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "received"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A views invitation",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B cannot view (403)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B cannot respond (403)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}/respond",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}",
+        "respond"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"status\": \"ACCEPTED\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Invalid respond status (400)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}/respond",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}",
+        "respond"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"status\": \"MAYBE\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 400',()=>pm.response.to.have.status(400));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A accepts",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}/respond",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}",
+        "respond"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"status\": \"ACCEPTED\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));pm.test('accepted',()=>pm.expect(pm.response.json().invitation.status).to.eql('ACCEPTED'));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Respond again (409)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}/respond",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}",
+        "respond"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"status\": \"REJECTED\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 409',()=>pm.response.to.have.status(409));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Invite Creator B",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"campaignId\": \"{{campaignId}}\",\n  \"creatorId\": \"{{creator2Id}}\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 201',()=>pm.response.to.have.status(201));pm.environment.set('invitation2Id',pm.response.json().invitation.id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B rejects",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitation2Id}}/respond",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitation2Id}}",
+        "respond"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"status\": \"REJECTED\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Withdraw already-answered (409)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/{{invitationId}}/withdraw",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "{{invitationId}}",
+        "withdraw"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 409',()=>pm.response.to.have.status(409));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Not found (404)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/999999",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "999999"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 404',()=>pm.response.to.have.status(404));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Bad id (400)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations/abc",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations",
+        "abc"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 400',()=>pm.response.to.have.status(400));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Close campaign",
+     "request": {
+      "method": "PUT",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/campaigns/{{campaignId}}",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "campaigns",
+        "{{campaignId}}"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"status\": \"CLOSED\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Invite to closed campaign (409)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/invitations",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "invitations"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      },
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"campaignId\": \"{{campaignId}}\",\n  \"creatorId\": \"{{creator2Id}}\"\n}"
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 409',()=>pm.response.to.have.status(409));"
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "4 Notifications (Day 5)",
+   "item": [
+    {
+     "name": "Creator A lists notifications",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));const j=pm.response.json();pm.test('has INVITATION_RECEIVED',()=>pm.expect(j.notifications.some(n=>n.type==='INVITATION_RECEIVED')).to.be.true);pm.test('unread >= 1',()=>pm.expect(j.unreadCount).to.be.at.least(1));pm.environment.set('notificationId',j.notifications.find(n=>n.type==='INVITATION_RECEIVED').id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A unread only",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications?isRead=false",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications"
+       ],
+       "query": [
+        {
+         "key": "isRead",
+         "value": "false"
+        }
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));pm.test('all unread',()=>pm.response.json().notifications.every(n=>n.isRead===false));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Invalid isRead filter (400)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications?isRead=maybe",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications"
+       ],
+       "query": [
+        {
+         "key": "isRead",
+         "value": "maybe"
+        }
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 400',()=>pm.response.to.have.status(400));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "No token (401)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications"
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 401',()=>pm.response.to.have.status(401));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator B cannot read A's notification (403)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "{{notificationId}}",
+        "read"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creator2Token}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 403',()=>pm.response.to.have.status(403));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A marks read",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "{{notificationId}}",
+        "read"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));pm.test('isRead',()=>{const n=pm.response.json().notification;pm.expect(n.isRead).to.be.true;pm.expect(n.readAt).to.not.be.null;});"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Mark read again (idempotent)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "{{notificationId}}",
+        "read"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Creator A unread count is 0",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/unread-count",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "unread-count"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));pm.test('0 unread',()=>pm.expect(pm.response.json().unreadCount).to.eql(0));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand A sees accepted + rejected",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));const t=pm.response.json().notifications.map(n=>n.type);pm.test('accepted',()=>pm.expect(t).to.include('INVITATION_ACCEPTED'));pm.test('rejected',()=>pm.expect(t).to.include('INVITATION_REJECTED'));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand A mark all read",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/read-all",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "read-all"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));pm.test('updated >= 2',()=>pm.expect(pm.response.json().updated).to.be.at.least(2));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Brand A unread count is 0",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/unread-count",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "unread-count"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{brandToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 200',()=>pm.response.to.have.status(200));pm.test('0 unread',()=>pm.expect(pm.response.json().unreadCount).to.eql(0));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Notification not found (404)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/999999/read",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "999999",
+        "read"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 404',()=>pm.response.to.have.status(404));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Bad notification id (400)",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "url": {
+       "raw": "{{baseUrl}}/notifications/abc/read",
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "path": [
+        "notifications",
+        "abc",
+        "read"
+       ]
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{creatorToken}}",
+         "type": "string"
+        }
+       ]
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "type": "text/javascript",
+        "exec": [
+         "pm.test('status 400',()=>pm.response.to.have.status(400));"
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "variable": [
+  {
+   "key": "baseUrl",
+   "value": "http://localhost:5000"
+  }
+ ]
+}
